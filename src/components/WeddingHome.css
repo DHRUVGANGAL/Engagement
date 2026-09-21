@@ -812,6 +812,16 @@
   color: #9c9288;
 }
 
+.footer-signature {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #a48268;
+  margin-top: 8px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
 /* Responsive adjustments */
 @media (max-width: 640px) {
   .section-naming {

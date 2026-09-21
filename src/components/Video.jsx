@@ -3,11 +3,12 @@ import inviteVideo from '../assets/invite-open.mp4';
 import placeholderImg from '../assets/placeholder.png';
 import './Video.css';
 
-export default function Video({ onComplete }) {
+export default function Video({ onComplete, onStartTransition, isExiting: propIsExiting }) {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [isExiting, setIsExiting] = useState(false);
+  const [localExiting, setLocalExiting] = useState(false);
+  const isExiting = propIsExiting || localExiting;
 
   const handleTapScreen = () => {
     if (isPlaying) return; // Once video has started, do not pause
@@ -32,10 +33,19 @@ export default function Video({ onComplete }) {
   };
 
   const triggerComplete = () => {
-    setIsExiting(true);
+    if (isExiting) return;
+    setLocalExiting(true);
+    if (videoRef.current) {
+      try {
+        videoRef.current.pause(); // Freeze on final frame to prevent black/rewind flash
+      } catch (err) {
+        console.warn('Video pause error:', err);
+      }
+    }
+    onStartTransition?.();
     setTimeout(() => {
       onComplete?.();
-    }, 400);
+    }, 850); // Velvet smooth dissolve duration
   };
 
   return (

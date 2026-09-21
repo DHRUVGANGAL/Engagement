@@ -11,13 +11,21 @@
   justify-content: center;
   overflow: hidden;
   z-index: 9999;
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  transition: opacity 0.85s cubic-bezier(0.25, 1, 0.5, 1), transform 0.85s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: opacity, transform;
 }
 
 .video-intro-container.fade-out {
   opacity: 0;
   transform: scale(1.02);
   pointer-events: none;
+}
+
+.video-intro-container.fade-out .skip-intro-glass-btn,
+.video-intro-container.fade-out .video-progress-track {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-out;
 }
 
 /* Soft warm ambient backdrop for laptop/desktop screens */

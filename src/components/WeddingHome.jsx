@@ -5,7 +5,7 @@ import ScratchCard from './ScratchCard';
 import appleLogo from '../assets/apple-logo-svgrepo-com.svg';
 import './WeddingHome.css';
 
-export default function WeddingHome({ onReplayIntro }) {
+export default function WeddingHome({ onReplayIntro, isIntroActive = false }) {
   const [wishesSent, setWishesSent] = useState(false);
   const [guestName, setGuestName] = useState('');
   const [guestMessage, setGuestMessage] = useState('');
@@ -130,7 +130,7 @@ export default function WeddingHome({ onReplayIntro }) {
         />
 
         {/* Floating Pink Flower Petals */}
-        <div className="petals-container" aria-hidden="true">
+        <div className={`petals-container ${isIntroActive ? 'petals-paused' : 'petals-active'}`} aria-hidden="true">
           {petals.map((p) => (
             <div
               key={p.id}
@@ -147,8 +147,8 @@ export default function WeddingHome({ onReplayIntro }) {
           ))}
         </div>
 
-        {/* Section 1 Content */}
-        <div className="naming-content">
+        {/* Section 1 Content with smooth entrance animation */}
+        <div className={`naming-content ${isIntroActive ? 'content-hidden' : 'content-revealed'}`}>
           <p className="blessing-shloka">|| ॐ श्री शिवाय नमस्तुभ्यं ||</p>
           <div className="logo-centerpiece">
             <img src="/logo.png" alt="Sakshi & Ikshit Monogram" className="main-couple-logo" />

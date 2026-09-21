@@ -1,0 +1,83 @@
+import React, { useRef, useState } from 'react';
+import inviteVideo from '../assets/invite-open.mp4';
+import './Video.css';
+
+export default function Video({ onComplete }) {
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [isExiting, setIsExiting] = useState(false);
+
+  const handleTapScreen = () => {
+    if (isPlaying) return; // Once video has started, do not pause
+    if (videoRef.current && videoRef.current.paused) {
+      videoRef.current.muted = false; // Always with sound on tap
+      videoRef.current
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch((err) => {
+          console.warn('Playback error:', err);
+        });
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current && videoRef.current.duration) {
+      const currentProgress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
+      setProgress(currentProgress);
+    }
+  };
+
+  const triggerComplete = () => {
+    setIsExiting(true);
+    setTimeout(() => {
+      onComplete?.();
+    }, 400);
+  };
+
+  return (
+    <div className={`video-intro-container ${isExiting ? 'fade-out' : ''}`}>
+      {/* Light Luxury Ambient Backdrop for Laptop / Desktop */}
+      <div className="ambient-backdrop" />
+
+      {/* Main Video Viewport - Tap anywhere to play */}
+      <div className={`video-viewport ${isPlaying ? 'is-playing' : 'awaiting-tap'}`} onClick={handleTapScreen}>
+        <video
+          ref={videoRef}
+          src={inviteVideo}
+          className="intro-video"
+          playsInline
+          muted={false}
+          onTimeUpdate={handleTimeUpdate}
+          onEnded={triggerComplete}
+        />
+
+        {/* Skip Intro Button - Bottom Right with Glass background */}
+        <button
+          type="button"
+          className="skip-intro-glass-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            triggerComplete();
+          }}
+          aria-label="Skip Intro"
+        >
+          <span>Skip</span>
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+            <path d="M5 4l10 8-10 8V4zm11 0h3v16h-3V4z" />
+          </svg>
+        </button>
+
+        {/* Subtle Bottom Progress Track */}
+        {isPlaying && (
+          <div className="video-progress-track">
+            <div
+              className="video-progress-fill"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

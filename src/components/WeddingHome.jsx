@@ -344,50 +344,6 @@ export default function WeddingHome({ onReplayIntro }) {
             </div>
           </div>
         )}
-
-        {/* RSVP Card */}
-        <div className="rsvp-card">
-          <h2 className="section-title">Send Your Blessings & RSVP</h2>
-          <p className="rsvp-sub">Leave a warm message for Sakshi & Ikshit</p>
-
-          {wishesSent ? (
-            <div className="success-banner">
-              <div className="success-icon">💐</div>
-              <h3>Thank you for your warm wishes!</h3>
-              <p>Sakshi & Ikshit are blessed to have your love and presence.</p>
-              <button
-                type="button"
-                className="action-pill-btn"
-                onClick={() => setWishesSent(false)}
-                style={{ marginTop: '16px' }}
-              >
-                Send Another Blessing
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={handleSendWish} className="wishes-form">
-              <input
-                type="text"
-                className="custom-input"
-                placeholder="Your Full Name"
-                value={guestName}
-                onChange={(e) => setGuestName(e.target.value)}
-                required
-              />
-              <textarea
-                className="custom-textarea"
-                placeholder="Write your wishes, blessings or RSVP note for Sakshi & Ikshit..."
-                rows={3}
-                value={guestMessage}
-                onChange={(e) => setGuestMessage(e.target.value)}
-              />
-              <button type="submit" className="submit-wish-btn">
-                Send Blessings ✦
-              </button>
-            </form>
-          )}
-        </div>
-
         {/* Footer */}
         <footer className="wedding-footer">
           <img src="/logo.png" alt="Sakshi & Ikshit" className="footer-logo" />

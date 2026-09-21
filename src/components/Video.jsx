@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import inviteVideo from '../assets/invite-open.mp4';
+import placeholderImg from '../assets/placeholder.png';
 import './Video.css';
 
 export default function Video({ onComplete }) {
@@ -10,11 +11,13 @@ export default function Video({ onComplete }) {
 
   const handleTapScreen = () => {
     if (isPlaying) return; // Once video has started, do not pause
-    if (videoRef.current && videoRef.current.paused) {
+    if (videoRef.current) {
       videoRef.current.muted = false; // Always with sound on tap
       videoRef.current
         .play()
-        .then(() => setIsPlaying(true))
+        .then(() => {
+          setIsPlaying(true);
+        })
         .catch((err) => {
           console.warn('Playback error:', err);
         });
@@ -41,15 +44,28 @@ export default function Video({ onComplete }) {
       <div className="ambient-backdrop" />
 
       {/* Main Video Viewport - Tap anywhere to play */}
-      <div className={`video-viewport ${isPlaying ? 'is-playing' : 'awaiting-tap'}`} onClick={handleTapScreen}>
+      <div
+        className={`video-viewport ${isPlaying ? 'is-playing' : 'awaiting-tap'}`}
+        onClick={handleTapScreen}
+      >
         <video
           ref={videoRef}
           src={inviteVideo}
+          poster={placeholderImg}
+          preload="auto"
           className="intro-video"
           playsInline
           muted={false}
+          onPlaying={() => setIsPlaying(true)}
           onTimeUpdate={handleTimeUpdate}
           onEnded={triggerComplete}
+        />
+
+        {/* Seamless Placeholder Cover Overlay until video playback begins */}
+        <img
+          src={placeholderImg}
+          alt="Tap to open invitation"
+          className={`video-placeholder-cover ${isPlaying ? 'fade-out' : ''}`}
         />
 
         {/* Skip Intro Button - Bottom Right with Glass background */}

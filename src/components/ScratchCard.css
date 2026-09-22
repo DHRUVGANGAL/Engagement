@@ -101,6 +101,16 @@
   transform: scale(1.04);
 }
 
+/* Confetti Canvas contained strictly within the scratch block */
+.scratch-confetti-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
 /* Tap to reveal button */
 .auto-reveal-btn {
   margin-top: 14px;

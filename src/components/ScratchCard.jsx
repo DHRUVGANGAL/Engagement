@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
+import confetti from 'canvas-confetti';
 import './ScratchCard.css';
 
 export default function ScratchCard({ onRevealed }) {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
+  const confettiCanvasRef = useRef(null);
   const [isRevealed, setIsRevealed] = useState(false);
-  const [isDrawing, setIsDrawing] = useState(false);
   const isDrawingRef = useRef(false);
   const hasRevealedRef = useRef(false);
 
@@ -105,16 +106,84 @@ export default function ScratchCard({ onRevealed }) {
     }
   };
 
+  const triggerConfetti = () => {
+    const canvas = confettiCanvasRef.current;
+    if (!canvas) return;
+
+    // Use local canvas renderer contained strictly inside this scratch card block
+    const confettiInstance = confetti.create(canvas, {
+      resize: true,
+      useWorker: false,
+    });
+
+    const celebrationColors = [
+      '#d4af37', // Regal Gold
+      '#ffd700', // Metallic Gold
+      '#fff4cc', // Warm Champagne
+      '#ff5e7e', // Rose Pink
+      '#ff8da1', // Soft Blossom Pink
+      '#ffffff', // Shimmering White
+    ];
+
+    // Left cannon inside block
+    confettiInstance({
+      particleCount: 40,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0.05, y: 0.85 },
+      colors: celebrationColors,
+      gravity: 0.9,
+      scalar: 0.95,
+      ticks: 180,
+    });
+
+    // Right cannon inside block
+    confettiInstance({
+      particleCount: 40,
+      angle: 120,
+      spread: 55,
+      origin: { x: 0.95, y: 0.85 },
+      colors: celebrationColors,
+      gravity: 0.9,
+      scalar: 0.95,
+      ticks: 180,
+    });
+
+    // Center sparkling burst
+    confettiInstance({
+      particleCount: 45,
+      spread: 80,
+      origin: { x: 0.5, y: 0.6 },
+      colors: celebrationColors,
+      gravity: 0.85,
+      scalar: 1.05,
+      ticks: 190,
+    });
+
+    // Gentle follow-up cascade
+    setTimeout(() => {
+      confettiInstance({
+        particleCount: 30,
+        spread: 90,
+        origin: { x: 0.5, y: 0.3 },
+        colors: celebrationColors,
+        gravity: 0.8,
+        scalar: 0.85,
+        ticks: 160,
+      });
+    }, 280);
+  };
+
   const revealFull = () => {
     if (hasRevealedRef.current) return;
     hasRevealedRef.current = true;
     setIsRevealed(true);
+    triggerConfetti();
     onRevealed?.();
   };
 
   const handleMouseDown = (e) => {
     isDrawingRef.current = true;
-    setIsDrawing(true);
     const { x, y } = getPosition(e);
     scratch(x, y);
   };
@@ -127,12 +196,10 @@ export default function ScratchCard({ onRevealed }) {
 
   const handleMouseUp = () => {
     isDrawingRef.current = false;
-    setIsDrawing(false);
   };
 
   const handleTouchStart = (e) => {
     isDrawingRef.current = true;
-    setIsDrawing(true);
     const { x, y } = getPosition(e);
     scratch(x, y);
   };
@@ -146,7 +213,6 @@ export default function ScratchCard({ onRevealed }) {
 
   const handleTouchEnd = () => {
     isDrawingRef.current = false;
-    setIsDrawing(false);
   };
 
   return (
@@ -172,6 +238,13 @@ export default function ScratchCard({ onRevealed }) {
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
+        />
+
+        {/* Confetti Celebration Canvas strictly contained inside this block */}
+        <canvas
+          ref={confettiCanvasRef}
+          className="scratch-confetti-canvas"
+          aria-hidden="true"
         />
       </div>
 
